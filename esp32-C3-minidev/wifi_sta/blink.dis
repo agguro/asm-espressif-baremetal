@@ -1,0 +1,27 @@
+
+blink.elf:     file format elf32-avr
+
+
+Disassembly of section .text:
+
+00000000 <__ctors_end>:
+   0:	27 9a       	sbi	0x04, 7	; 4
+
+00000002 <loop>:
+   2:	1f 9a       	sbi	0x03, 7	; 3
+   4:	a2 e5       	ldi	r26, 0x52	; 82
+
+00000006 <delay_outer>:
+   6:	9f ef       	ldi	r25, 0xFF	; 255
+
+00000008 <delay_middle>:
+   8:	8f ef       	ldi	r24, 0xFF	; 255
+
+0000000a <delay_inner>:
+   a:	8a 95       	dec	r24
+   c:	f1 f7       	brne	.-4      	; 0xa <delay_inner>
+   e:	9a 95       	dec	r25
+  10:	d9 f7       	brne	.-10     	; 0x8 <delay_middle>
+  12:	aa 95       	dec	r26
+  14:	c1 f7       	brne	.-16     	; 0x6 <delay_outer>
+  16:	f5 cf       	rjmp	.-22     	; 0x2 <loop>

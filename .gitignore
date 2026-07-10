@@ -1,0 +1,10 @@
+# Sla gecompileerde binaries en objectbestanden over
+*.o
+boot_analysis
+get_chipid
+espsync
+
+# Sla Python virtuele omgevingen over
+.venv/
+__pycache__/
+venv/
