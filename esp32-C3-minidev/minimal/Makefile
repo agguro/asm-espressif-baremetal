@@ -1,33 +1,40 @@
 # ==============================================================================
-# Makefile for ESP32-C3 minimal project with custom OTA boot_app0
+# Makefile for ESP32-C3 pure assembly project (True Bare-Metal)
 # ==============================================================================
 
-PROJECT = minimal
-FQBN    = esp32:esp32:esp32c3
-PORT    = /dev/ttyACM0
-BAUD    = 921600
+PORT = /dev/ttyACM0
+BAUD = 921600
 
-# Binaries to flash
-BOOTLOADER = ./build/$(PROJECT).ino.bootloader.bin
-PARTITIONS = ./build/$(PROJECT).ino.partitions.bin
-APP        = ./build/$(PROJECT).ino.bin
+TARGET = minimal
 
-# Your custom bare-metal OTA boot app (ensure this file exists in your project root)
-CUSTOM_BOOT_APP = ./build/boot_app.bin
+AS      = riscv32-esp-elf-as
+LD      = riscv32-esp-elf-ld
+ESPTOOL = esptool
 
-.PHONY: all compile upload clean
+SRC = $(TARGET).s
+LDS = $(TARGET).ld
+OBJ = build/$(TARGET).o
+ELF = build/$(TARGET).elf
+APP = build/$(TARGET).bin
 
-all: compile
+.PHONY: all clean flash
 
-compile:
-	arduino-cli compile --fqbn $(FQBN) --build-path ./build .
-	cp ../boot_app/boot_app.bin build/
-upload:
-	esptool --chip esp32c3 --port $(PORT) --baud $(BAUD) write_flash \
-		0x00000 $(BOOTLOADER) \
-		0x08000 $(PARTITIONS) \
-		0x0e000 $(CUSTOM_BOOT_APP) \
-		0x10000 $(APP)
+all: $(APP)
+
+$(OBJ): $(SRC)
+	@mkdir -p build
+	$(AS) -o $@ $<
+
+$(ELF): $(OBJ)
+	$(LD) -T $(LDS) -o $@ $<
+
+$(APP): $(ELF)
+	$(ESPTOOL) --chip esp32c3 elf2image --flash-mode dio --flash-freq 40m --flash-size 4MB -o $@ $<
+
+# We now flash our app directly to 0x00000, overwriting everything!
+flash: $(APP)
+	$(ESPTOOL) --chip esp32c3 --port $(PORT) --baud $(BAUD) write-flash \
+		0x00000 $(APP)
 
 clean:
-	rm -rf ./build
+	rm -rf build
