@@ -1,10 +1,16 @@
-# Sla gecompileerde binaries en objectbestanden over
 *.o
+*.elf
+*.bin
+*.map
+*.hex
+
+build/
+
 boot_analysis
 get_chipid
 espsync
 
-# Sla Python virtuele omgevingen over
 .venv/
-__pycache__/
 venv/
+__pycache__/
+*.pyc
