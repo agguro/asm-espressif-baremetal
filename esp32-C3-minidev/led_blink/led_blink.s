@@ -32,7 +32,7 @@
     # SEGMENT HEADER (8 bytes)
     # Defines the destination memory region for the binary payload.
     # ---------------------------------------------------------
-    .word 0x40380000         # 0x18: Target load address in Instruction RAM (IRAM)
+    .word 0x40380000             # 0x18: Target load address in Instruction RAM (IRAM)
     .word _seg_end - _seg_start  # 0x1C: Dynamic segment length calculation
 
     # ---------------------------------------------------------

@@ -1,5 +1,5 @@
 # =====================================================================
-# Project:     Bare-Metal ESP32-C3 Assembly Blink
+# Project:     Bare-Metal ESP32-C3 Assembly
 # Author:      agguro
 # Date:        August 11, 2026
 # Description: Automated build, python patch, and flash pipeline

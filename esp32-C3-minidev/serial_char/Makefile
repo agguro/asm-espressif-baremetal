@@ -51,7 +51,7 @@ erase:
 
 flash: build
 	$(ESPTOOL) --port $(PORT) --chip esp32c3 write-flash 0x0 $(BIN)
-	cat $(PORT)
+	@echo "run cat "$(PORT) "to see serial output"
 
 clean:
 	rm -rf $(OUT)
