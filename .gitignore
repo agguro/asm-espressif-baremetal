@@ -5,10 +5,7 @@
 *.hex
 
 build/
-
-boot_analysis
-get_chipid
-espsync
+dump/
 
 .venv/
 venv/
