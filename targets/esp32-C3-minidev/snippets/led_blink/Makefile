@@ -2,23 +2,27 @@
 # Project:     Bare-Metal ESP32-C3 Assembly
 # Author:      agguro
 # Date:        August 11, 2026
-# Description: Automated build, python patch, and flash pipeline
+# Description: Automated build, python patch, and flash pipeline 
+#              using the generic Debian riscv64-unknown-elf toolchain.
 # =====================================================================
 
-TARGET  ?= $(shell basename $(CURDIR))
-PORT    ?= /dev/ttyACM0
-OUT     ?= build
+TARGET      ?= $(shell basename $(CURDIR))
+PORT        ?= /dev/ttyACM0
+OUT         ?= build
 
-ELF     ?= $(OUT)/$(TARGET).elf
-BIN     ?= $(OUT)/$(TARGET).bin
-OBJ     ?= $(OUT)/$(TARGET).o
-LST     ?= $(OUT)/$(TARGET).lst
-SRC     ?= $(TARGET).s
+ELF         ?= $(OUT)/$(TARGET).elf
+BIN         ?= $(OUT)/$(TARGET).bin
+OBJ         ?= $(OUT)/$(TARGET).o
+LST         ?= $(OUT)/$(TARGET).lst
+SRC         ?= $(TARGET).s
 
-AS      = riscv32-esp-elf-as
-LD      = riscv32-esp-elf-ld
-OBJCOPY = riscv32-esp-elf-objcopy
-ESPTOOL = esptool
+RV_AS       = riscv64-unknown-elf-as
+RV_LD       = riscv64-unknown-elf-ld
+RV_OBJ      = riscv64-unknown-elf-objcopy
+ESPTOOL     = esptool
+
+RV_ASFLAGS  = -march=rv32imc_zicsr -mabi=ilp32
+RV_LDFLAGS  = -m elf32lriscv -Ttext=0x40380000
 
 .PHONY: all build erase flash clean
 
@@ -28,13 +32,13 @@ build: $(BIN)
 
 $(OBJ): $(SRC)
 	@mkdir -p $(OUT)
-	$(AS) -march=rv32imc -alh -o $@ $< > $(LST)
+	$(RV_AS) $(RV_ASFLAGS) -alh -o $@ $< > $(LST)
 
 $(ELF): $(OBJ)
-	$(LD) -Ttext=0x40380000 -o $@ $<
+	$(RV_LD) $(RV_LDFLAGS) -o $@ $<
 
 $(BIN): $(ELF)
-	$(OBJCOPY) -O binary -j .text $< $@
+	$(RV_OBJ) -O binary -j .text $< $@
 	@python3 -c 'import sys, functools, operator; \
 path=sys.argv[1]; \
 data=bytearray(open(path, "rb").read()); \
