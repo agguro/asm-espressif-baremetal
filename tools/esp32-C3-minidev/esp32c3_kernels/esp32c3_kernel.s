@@ -90,27 +90,23 @@ _start:
     # ---------------------------------------------------------
     # 5. INFINITE BLINK LOOP
     # ---------------------------------------------------------
+
+# Initialize register and pin mask once
+    li   t0, 0x60004008          # Start with GPIO_OUT_W1TS_REG (Set / LED OFF)
+    li   t1, 0x100               # Bit 8 for GPIO 8
+
 blink_loop:
-    # LED ON (Active Low) -> Clear GPIO 8
-    li   t0, 0x6000400C          # GPIO_OUT_W1TC_REG
-    li   t1, 0x100
+    # Write mask to whichever register address is currently in t0
     sw   t1, 0(t0)
 
-    # Delay loop (approx. 0.5 seconds depending on clock speed)
-    li   t2, 1000000
-delay_on:
+    # Delay loop (only written once!)
+    li   t2, 5000000
+delay_loop:
     addi t2, t2, -1
-    bnez t2, delay_on
+    bnez t2, delay_loop
 
-    # LED OFF (Active Low) -> Set GPIO 8
-    li   t0, 0x60004008          # GPIO_OUT_W1TS_REG
-    li   t1, 0x100
-    sw   t1, 0(t0)
+    # Toggle t0 between 0x60004008 and 0x6000400C using XOR
+    # 0x08 ^ 0x04 = 0x0C  (and 0x0C ^ 0x04 = 0x08)
+    xori t0, t0, 4
 
-    # Delay loop
-    li   t2, 1000000
-delay_off:
-    addi t2, t2, -1
-    bnez t2, delay_off
-
-    j    blink_loop              # Loop indefinitely
+    j    blink_loop              # Repeat forever
