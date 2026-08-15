@@ -13,29 +13,6 @@
 . = 0                    # Start cleanly at 0 for the flat binary
 
     # ---------------------------------------------------------
-    # ESP32-C3 ROM IMAGE HEADER V2 (24 bytes)
-    # ---------------------------------------------------------
-    .byte 0xE9                 # 0x00: Magic byte for ESP boot image
-    .byte 1                    # 0x01: Number of segments
-    .byte 2                    # 0x02: SPI flash mode (2 = DIO)
-    .byte 0                    # 0x03: SPI flash speed and size config
-    .word 0x40380000           # 0x04: Entry point address in IRAM
-    .word 0                    # 0x08: WP pin / drive settings
-    .half 5                    # 0x0C: Chip ID (5 = ESP32-C3)
-    .byte 0                    # 0x0E: Minimum chip revision
-    .half 0                    # 0x0F: Min revision full
-    .half 0                    # 0x11: Max revision full
-    .half 0                    # 0x13: Reserved bytes
-    .byte 0                    # 0x15: Append digest flag
-    .byte 0, 0                 # 0x16: Padding alignment bytes
-
-    # ---------------------------------------------------------
-    # SEGMENT HEADER (8 bytes)
-    # ---------------------------------------------------------
-    .word 0x40380000           # 0x18: Target load address in Instruction RAM (IRAM)
-    .word 0                    # 0x1C: Dynamic segment length calculation
-
-    # ---------------------------------------------------------
     # SEGMENT DATA (Main Entry Point)
     # ---------------------------------------------------------
     .global _start

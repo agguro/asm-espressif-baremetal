@@ -3,6 +3,7 @@
 *.bin
 *.map
 *.hex
+*.dump
 
 build/
 dump/

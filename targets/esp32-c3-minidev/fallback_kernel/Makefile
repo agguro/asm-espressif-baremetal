@@ -4,8 +4,7 @@
 # =====================================================================
 
 TARGET     = $(shell basename $(CURDIR))
-LINKER     = ../esp32c3_kernel_linker.ld
-SYMLINK    = esp32c3_kernel.bin
+LINKER     = $(TARGET).ld
 
 RV_AS      = riscv64-unknown-elf-as
 RV_LD      = riscv64-unknown-elf-ld
@@ -32,7 +31,7 @@ $(BUILD_REL) $(BUILD_DBG):
 # RELEASE TARGET (Optimized binary output only)
 # ---------------------------------------------------------------------
 release: $(BUILD_REL)/$(TARGET).bin
-	@echo "[BUILD] Release kernel '$(TARGET)' completed in $(BUILD_REL)/ (symlinked to esp32c3_kernel.bin)"
+	@echo "[BUILD] Release kernel '$(TARGET)' completed in $(BUILD_REL)/"
 
 $(BUILD_REL)/$(TARGET).bin: $(TARGET).s $(LINKER) | $(BUILD_REL)
 	$(RV_AS) $(RV_ASFLAGS) -o $(BUILD_REL)/$(TARGET).o $<
@@ -44,7 +43,7 @@ $(BUILD_REL)/$(TARGET).bin: $(TARGET).s $(LINKER) | $(BUILD_REL)
 # DEBUG TARGET (Includes ELF, Map, Disassembly Listing, and Hexdump)
 # ---------------------------------------------------------------------
 debug: $(BUILD_DBG)/$(TARGET).bin $(BUILD_DBG)/$(TARGET).lst $(BUILD_DBG)/$(TARGET).hex
-	@echo "[BUILD] Debug kernel '$(TARGET)' completed in $(BUILD_DBG)/ (symlinked to esp32c3_kernel.bin)"
+	@echo "[BUILD] Debug kernel '$(TARGET)' completed in $(BUILD_DBG)/"
 
 $(BUILD_DBG)/$(TARGET).bin: $(TARGET).s $(LINKER) | $(BUILD_DBG)
 	$(RV_AS) $(RV_ASFLAGS) -g -o $(BUILD_DBG)/$(TARGET).o $<
