@@ -50,14 +50,12 @@
     # Defines the target memory destination and binary size.
     # ---------------------------------------------------------
     .word 0x40380000       # 0x18: Target load address in Instruction RAM (IRAM)
-    .word _seg_end - _seg_start  # 0x1C: Dynamic segment length calculation
+    .word                  # 0x1C: Dynamic segment length calculation
 
     # ---------------------------------------------------------
     # SEGMENT DATA (Main Entry Point)
     # ---------------------------------------------------------
 .global _start
-.global _seg_start
-_seg_start:
 _start:
     # Disable all CPU interrupts during early hardware initialization
     csrci mstatus, 8
@@ -517,6 +515,3 @@ scroll_source:
     .align 4
 framebuffer:
     .skip 360
-
-_seg_end:
-    .align 4
