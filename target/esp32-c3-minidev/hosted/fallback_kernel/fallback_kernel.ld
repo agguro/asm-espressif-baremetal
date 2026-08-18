@@ -7,5 +7,5 @@ SECTIONS
     }
     .rodata : { *(.rodata*) }
     .data : { *(.data*) }
-    .bss : { *(.bss*) }
+    /* .bss removed entirely to prevent uninitialized memory tracking bugs */
 }
